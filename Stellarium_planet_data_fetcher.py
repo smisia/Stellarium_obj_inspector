@@ -102,4 +102,3 @@ if USED_LOCALLY:
         get_data_from_source()
 else:
     threading.Thread(target=get_data_from_source, daemon=True).start()
-
