@@ -21,3 +21,4 @@ Legacy:
 
 ## Notes
 1. Is it still possible to use the `Stellarium_planet_data_fetcher.py` individually you just have to run it in a different .bat file (or from cmd). The standalone script got some small updates but still usable perfectly fine.
+
