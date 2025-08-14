@@ -3,14 +3,17 @@
 #include <HTTPClient.h>
 
 /*********** Global variable declaraion **************/
+#define INTERNAL_LED 2
+#define BUTTON_PIN 5
 
 const char* ssid = "Your router SSID";
 const char* password = "Your router password";
 const char* url = "http://loclahost:5000/send";
 
+volatile bool button_pressed = false;
+
 // HTTP related variables
 HTTPClient http;
-int httpCode;
 String payload;
 
 // Data process related variables
@@ -19,7 +22,25 @@ char buffer[64];
 
 /*********** End of global variable declaraion ********/
 
+
+/*********** Function prototype declarations **********/
+
+// Processing the payload and convering it to usable data
+void process_data(char* buffer);
+
+// Executes the whole http process
+void handle_http(const char* input_url, String input_payload);
+
+void IRAM_ATTR handleButtonInterrupt();
+
+int read_button(int input_pin);
+
+/****** End of function prototype declarations ********/
+
+
 void setup(){
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    pinMode(INTERNAL_LED, OUTPUT);
 
     Serial.begin(115200);
     delay(1000);
@@ -27,7 +48,7 @@ void setup(){
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
 
-    pinMode(2, OUTPUT);
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), handleButtonInterrupt, FALLING);
 }
 
 void loop(){
@@ -39,23 +60,37 @@ void loop(){
     Serial.println(WiFi.localIP());
   }
 
-  // HTTP commnication
-  http.begin(url);
+  handle_http(url,payload);
 
+  // Temporary solution until button functionality is not implemented
+  if(button_pressed){
+    button_pressed = false;
+    Serial.println("Button is pressed!");
+  }
+
+  process_data(buffer);
+}
+
+/****************** Functions ********************/
+
+void handle_http(const char* input_url, String input_payload){
+  
+  http.begin(input_url);
   http.addHeader("Content-Type", "charset=utf-8");
-
-  httpCode = http.GET();
-
+  int httpCode = http.GET();
   Serial.printf("HTTP code: %d\n", httpCode);
 
   if (httpCode > 0) {
-            payload = http.getString();
+            input_payload = http.getString();
           }else{
             Serial.printf("GET request failed, error: %s\n", http.errorToString(httpCode).c_str());
           }
   http.end();
+}
 
-  // Processing the payload and convering it to usable data
+/*************************************************/
+void process_data(char* buffer){
+
   payload.trim();
   payload.toCharArray(buffer, sizeof(buffer));
 
@@ -70,5 +105,16 @@ void loop(){
       Serial.printf("RA = %.5f, DEC = %.5f\n", ra, dec);
     }
   }
-    
 }
+
+/*************************************************/
+void IRAM_ATTR handleButtonInterrupt(){
+    button_pressed = true;
+}
+
+/*************************************************/
+int read_button(int input_pin){
+  int buttonState = digitalRead(input_pin);
+  return buttonState;
+}
+/*************** End of functions ***************/
