@@ -23,9 +23,9 @@ Legacy:
 1. Is it still possible to use the `Stellarium_planet_data_fetcher.py` individually you just have to run it in a different .bat file (or from cmd). The standalone script got some small updates but still usable perfectly fine.
 
 ## TODO
-[x] Create a sw for sending data to the MCU
-[x] MCU data processing
-[] MCU other functionality implementation
-[] Create a HAT for MCU usability functions
-[] Create rotator mechanism
+- [x] Create a sw for sending data to the MCU
+- [x] MCU data processing
+- [] MCU other functionality implementation
+- [] Create a HAT for MCU usability functions
+- [] Create rotator mechanism
 
