@@ -25,7 +25,7 @@ Legacy:
 ## TODO
 - [x] Create a sw for sending data to the MCU
 - [x] MCU data processing
-- [] MCU other functionality implementation
-- [] Create a HAT for MCU usability functions
-- [] Create rotator mechanism
+- [ ] MCU other functionality implementation
+- [ ] Create a HAT for MCU usability functions
+- [ ] Create rotator mechanism
 
