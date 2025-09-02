@@ -5,9 +5,10 @@
 /*********** Global variable declaraion **************/
 #define INTERNAL_LED 2
 #define BUTTON_PIN 5
+#define WAKEUP_GPIO GPIO_NUM_5
 
-const char* ssid = "Your router SSID";
-const char* password = "Your router password";
+const char* ssid = "Your router's ssid";
+const char* password = "Your router's password";
 const char* url = "http://loclahost:5000/send";
 
 volatile bool button_pressed = false;
@@ -41,6 +42,8 @@ int read_button(int input_pin);
 void setup(){
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(INTERNAL_LED, OUTPUT);
+
+    esp_sleep_enable_ext0_wakeup(WAKEUP_GPIO, HIGH);
 
     Serial.begin(115200);
     delay(1000);
@@ -109,7 +112,7 @@ void process_data(char* buffer){
 
 /*************************************************/
 void IRAM_ATTR handleButtonInterrupt(){
-    button_pressed = true;
+    esp_deep_sleep_start();
 }
 
 /*************************************************/
